@@ -23,31 +23,40 @@ import "../Component"
 
 AbstractDelegate {
     id: root
-    height: contextMenu.visible ? root.contentHeight + contextMenu.height : root.contentHeight
+    //height: contextMenu.visible ? root.contentHeight + contextMenu.height : root.contentHeight
 
     sideRectColor: {
         switch (settings.userScreenName) {
-        case model.inReplyToScreenName: return constant.colorTextSelection
-        case model.screenName: return constant.colorLight
-        default: return "transparent"
+
+        case model.inReplyToScreenName:
+            return Theme.highlightColor
+
+        case model.screenName:
+            return Theme.secondaryHighlightColor
+
+        default:
+            return "transparent"
         }
     }
 
-    LongPressMenu {
+    menu: LongPressMenu {
         id: contextMenu
         tweet: model
     }
 
     Item {
         id: titleContainer
-        anchors { left: parent.left; right: parent.right }
+        anchors {
+            left: parent.left;
+            right: parent.right
+        }
+
         height: userNameText.height
 
         // FIXME: After changing font size from small to large the username will become elided
         // for the loaded delegate
         Text {
             id: userNameText
-            anchors.left: parent.left
             width: Math.min(parent.width, implicitWidth)
             font.pixelSize: constant.fontSizeMedium
             font.bold: true
@@ -58,13 +67,16 @@ AbstractDelegate {
             text: model.name
         }
 
-        Text {
-            anchors { left: userNameText.right; right: favouriteIconLoader.left; margins: constant.paddingSmall }
-            font.pixelSize: constant.fontSizeMedium
+        Label {
+            anchors {
+                left: userNameText.right;
+                right: favouriteIconLoader.left;
+                margins: constant.paddingSmall
+            }
 
-            font.family: Theme.fontFamily
-            color: highlighted ? constant.colorHighlighted : constant.colorMid
-            elide: Text.ElideRight
+            font.pixelSize: Theme.fontSizeSmall
+            color: highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor //constant.colorHighlighted : constant.colorMid
+            truncationMode: TruncationMode.Fade
             text: "@" + model.screenName
         }
 
@@ -85,6 +97,15 @@ AbstractDelegate {
         }
     }
 
+    function getRichText(highlight) {
+        var text = model.richText
+
+        var colorNormal = highlight ? Theme.primaryColor : Theme.secondaryHighlightColor
+        var colorItalic = highlight ? Theme.secondaryColor : Theme.highlightColor
+
+        return text.replace(/\$LinkColorNormal\$/g, colorNormal).replace(/\$LinkColorItalic\$/g, colorItalic);
+    }
+
     Text {
         anchors { left: parent.left; right: parent.right }
         textFormat: Text.RichText
@@ -92,7 +113,7 @@ AbstractDelegate {
         font.family: Theme.fontFamily
         wrapMode: Text.Wrap
         color: highlighted ? constant.colorHighlighted : constant.colorLight
-        text: model.richText
+        text: getRichText(root.highlighted)
     }
 
     Loader {
@@ -122,12 +143,12 @@ AbstractDelegate {
         font.family: Theme.fontFamily
         color: highlighted ? constant.colorHighlighted : constant.colorMid
         elide: Text.ElideRight
-        text: model.source + " | " + model.timeDiff
+        text: model.source + " | " + Format.formatDate(model.createdAt, Formatter.DurationElapsed) //model.timeDiff
     }
 
     onClicked: pageStack.push(Qt.resolvedUrl("../TweetPage.qml"), { tweet: model })
 
-    onPressAndHold: {
-        contextMenu.show(root);
-    }
+//    onPressAndHold: {
+//        contextMenu.show(root);
+//    }
 }

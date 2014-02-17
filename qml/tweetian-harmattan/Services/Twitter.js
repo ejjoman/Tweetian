@@ -109,6 +109,7 @@ OAuthRequest.prototype.sendRequest = function(onSuccess, onFailure) {
                                                                         : this.message.action
     OAuth.completeRequest(this.message, this.accessor)
     var authorizationHeader = OAuth.getAuthorizationHeader(this.message.action, this.message.parameters)
+
     var request = new XMLHttpRequest()
     request.open(this.message.method, encodedURL)
 
@@ -131,8 +132,12 @@ OAuthRequest.prototype.sendRequest = function(onSuccess, onFailure) {
 function getHomeTimeline(sinceId, maxId, onSuccess, onFailure) {
     var timelineRequest = new OAuthRequest("GET", GET_TIMELIME_URL)
     var parameters = [["count", "200"], ["include_rts", true]]
-    if (maxId) parameters.push(["max_id", maxId])
-    else if (sinceId) parameters.push(["since_id", sinceId])
+
+    if (maxId)
+        parameters.push(["max_id", maxId])
+    else if (sinceId)
+        parameters.push(["since_id", sinceId])
+
     timelineRequest.setParameters(parameters)
     timelineRequest.sendRequest(onSuccess, onFailure)
 }

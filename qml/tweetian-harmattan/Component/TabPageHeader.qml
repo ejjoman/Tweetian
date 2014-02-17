@@ -32,12 +32,16 @@ Item {
     property variant iconArray: []
 
     anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-    height: constant.headerHeight
+    height: Theme.itemSizeSmall //constant.headerHeight
 
     Image {
         id: background
+        fillMode: Image.TileVertically
         anchors.fill: parent
-        source: "image://theme/graphic-header"
+        source: "image://theme/graphic-gradient-home-top"
+
+        //source: "image://theme/graphic-gradient-edge"
+
     }
 
     Row {
@@ -47,60 +51,88 @@ Item {
             id: sectionRepeater
             model: iconArray
             delegate: BackgroundItem {
+                id: tabDelegate
+
+                readonly property bool isActive: listView.currentIndex === index
+                readonly property int unreadCount: listView.model.children[index].unreadCount ? listView.model.children[index].unreadCount : 0
 
                 width: tabPageHeader.width / sectionRepeater.count
                 height: tabPageHeader.height
 
+                Rectangle {
+                    color: Theme.secondaryColor
+                    radius: 5
+
+                    anchors {
+                        top: parent.top;
+                        topMargin: Theme.paddingMedium
+                        right: parent.right;
+                        rightMargin: Theme.paddingSmall
+                    }
+
+                    visible: tabDelegate.unreadCount > 0
+
+                    width: count.width + Theme.paddingSmall
+                    height: count.height - Theme.paddingSmall
+
+                    Label {
+                        id: count
+                        anchors.centerIn: parent
+                        font.pixelSize: Theme.fontSizeExtraSmall  //Theme.fontSizeSmall
+                        //color: Theme.highlightColor
+
+                        text: tabDelegate.unreadCount > 0 ? tabDelegate.unreadCount : ""
+
+
+                    }
+                }
+
                 Image {
                     id: icon
-                    height: 36
-                    width: 36
+                    //height: 64
+                    //width: height
                     anchors.centerIn: parent
-                    source: modelData
+                    source: tabDelegate.isActive ? modelData + "?" + Theme.highlightColor : modelData
+                    smooth: true
                 }
 
-               Label {
-                    anchors {
-                        top: parent.top; topMargin: constant.paddingSmall
-                        left: icon.right; leftMargin: -constant.paddingMedium
-                    }
-                    visible: listView.model.children[index].unreadCount > 0
-                    font.pixelSize: Theme.fontSizeSmall
-                    color: Theme.highlightColor
 
-                    text: listView.model.children[index].unreadCount ? listView.model.children[index].unreadCount : ""
-                }
 
                 Loader {
                     anchors.fill: parent
-                    sourceComponent: listView.model.children[index].busy
-                                     ? busyIndicator : undefined
+                    sourceComponent: listView.model.children[index].busy ? busyIndicator : undefined
                     Component {
                         id: busyIndicator
 
-                        Rectangle {
+                        Item {
                             anchors.fill: parent
-                            color: "black"
-                            opacity: 0
 
-                            Behavior on opacity { NumberAnimation { duration: 250 } }
+                            Rectangle {
+                                id: loadingBackground
+                                anchors.fill: parent
+                                color: "black"
+                                opacity: 0
+
+                                Behavior on opacity { NumberAnimation { duration: 250 } }
+
+                                Component.onCompleted: opacity = 0.5
+                            }
 
                             BusyIndicator {
-                                opacity: 1
                                 anchors.centerIn: parent
                                 running: true
                                 height: tabPageHeader.height - Theme.paddingLarge
                                 width: height
                             }
-
-                            Component.onCompleted: opacity = 0.75
                         }
+
+
                     }
 
                 }
 
-                onClicked: listView.currentIndex === index ? listView.currentItem.positionAtTop()
-                                                               : listView.currentIndex = index
+                onClicked: isActive ? listView.currentItem.positionAtTop()
+                                    : listView.currentIndex = index
 
             }
         }
@@ -116,7 +148,7 @@ Item {
 
         Behavior on x {
             NumberAnimation {
-                duration: 200
+                duration: 100
             }
         }
     }

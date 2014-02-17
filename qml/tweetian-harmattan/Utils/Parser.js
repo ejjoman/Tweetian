@@ -21,14 +21,18 @@
 Qt.include("Calculations.js")
 
 function linkText(text, href, italic) {
-    var html = "";
-    if (italic) html = "<i><a style=\"color: white; text-decoration: none\" href=\"%1\">%2</a></i>";
-    else html = "<a style=\"color: DarkGray; text-decoration: none\" href=\"%1\">%2</a>";
+    var html = italic ? '<i><a style="color:$LinkColorItalic$; text-decoration: none;" href="%1">%2</a></i>' :
+                        '<a style="color:$LinkColorNormal$; text-decoration: none;" href="%1">%2</a>';
 
     return html.arg(href).arg(text);
 }
 
 function parseTweet(tweetJson) {
+    var originalTweetJson = tweetJson;
+
+    if (tweetJson.retweeted_status)
+        originalTweetJson = tweetJson.retweeted_status;
+
     var tweet = {
         id: tweetJson.id_str,
         source: tweetJson.source.replace(/<[^>]+>/ig, ""),
@@ -38,15 +42,9 @@ function parseTweet(tweetJson) {
         retweetScreenName: tweetJson.user.screen_name,
         timeDiff: timeDiff(tweetJson.created_at),
         favorite_count: tweetJson.favorite_count,
-        retweet_count: tweetJson.retweet_count
+        retweet_count: tweetJson.retweet_count,
+        isRetweet: tweetJson !== originalTweetJson,
     }
-
-    var originalTweetJson = {};
-    if (tweetJson.retweeted_status) {
-        originalTweetJson = tweetJson.retweeted_status;
-        tweet.isRetweet = true;
-    }
-    else originalTweetJson = tweetJson;
 
     tweet.plainText = __unescapeHtml(originalTweetJson.text);
     tweet.richText = __toRichText(originalTweetJson.text, originalTweetJson.entities);

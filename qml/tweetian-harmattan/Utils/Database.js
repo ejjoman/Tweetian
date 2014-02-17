@@ -151,6 +151,8 @@ function getScreenNames() {
 }
 
 function clearTable(tableName) {
+    console.log("[Database]", "Clear table", "'" + tableName + "'")
+
     db.transaction(function(tx) {
         tx.executeSql('DELETE FROM ' + tableName)
     })

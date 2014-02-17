@@ -19,7 +19,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-BackgroundItem {
+ListItem {
     id: root
 
     default property alias content: contentColumn.children
@@ -27,13 +27,13 @@ BackgroundItem {
     property string imageSource: profileImageUrl
     property bool subItemIndicator: false
 
-    property bool highlighted: pressed // read-only
+    //readonly property bool highlighted: pressed // read-only
 
     property int __originalHeight: contentHeight // private
 
     implicitWidth: ListView.view ? ListView.view.width : 0
     contentHeight: Math.max(contentColumn.height, profileImage.height) + 2 * constant.paddingMedium
-    height: contentHeight // For contextMenu override in child
+    //height: contentHeight // For contextMenu override in child
 
    /* Image {
         id: highlight
@@ -62,8 +62,18 @@ BackgroundItem {
 
     Item {
         id: profileImageMaskedItem
-        anchors { top: parent.top; left: parent.left; topMargin: constant.paddingMedium; rightMargin: constant.paddingLarge; bottomMargin: constant.paddingMedium }
-        width: constant.graphicSizeLarge; height: constant.graphicSizeLarge
+        anchors {
+            top: parent.top;
+            left: parent.left;
+            leftMargin: Theme.paddingMedium;
+            topMargin: Theme.paddingMedium;
+            rightMargin: Theme.paddingLarge;
+            bottomMargin: Theme.paddingMedium
+        }
+
+        width: Theme.iconSizeMedium;
+        height: width
+
     //    mask: Image { source: "../Image/pic_mask.png"}
 
         Image {
@@ -139,13 +149,17 @@ BackgroundItem {
         easing.type: Easing.OutBack
     }
 
-    ListView.onAdd: {
-        if (root.ListView.view.stayAtCurrentPosition) {
-            if (root.ListView.view.atYBeginning) root.ListView.view.contentY += 1
-            __originalHeight = contentHeight
-            contentHeight = 0
-            pause.start()
-        }
-        else onAddAnimation.start()
+//    ListView.onAdd: {
+//        if (root.ListView.view.stayAtCurrentPosition) {
+//            if (root.ListView.view.atYBeginning) root.ListView.view.contentY += 1
+//            __originalHeight = contentHeight
+//            contentHeight = 0
+//            pause.start()
+//        }
+//        else onAddAnimation.start()
+//    }
+
+    ListView.onAdd: AddAnimation {
+        target: root
     }
 }

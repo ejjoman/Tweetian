@@ -56,15 +56,31 @@ Item {
         if (tweetView.count <= 0)
             type = "all";
         var sinceId = "", maxId = "";
+
         switch (type) {
-        case "newer": sinceId = tweetView.model.get(0).id; break;
-        case "older": maxId = tweetView.model.get(tweetView.count - 1).id; break;
-        case "all": tweetView.model.clear(); break;
-        default: throw new Error("Invalid type");
+        case "newer":
+            sinceId = tweetView.model.get(0).id;
+            break;
+
+        case "older":
+            maxId = tweetView.model.get(tweetView.count - 1).id;
+            break;
+
+        case "all":
+            tweetView.model.clear();
+            break;
+
+        default:
+            throw new Error("Invalid type");
         }
+
         reloadType = type
-        if (root.type == "Timeline") Twitter.getHomeTimeline(sinceId, Calculate.minusOne(maxId), internal.successCallback, internal.failureCallback)
-        else Twitter.getMentions(sinceId, Calculate.minusOne(maxId), internal.successCallback, internal.failureCallback)
+
+        if (root.type == "Timeline")
+            Twitter.getHomeTimeline(sinceId, Calculate.minusOne(maxId), internal.successCallback, internal.failureCallback)
+        else
+            Twitter.getMentions(sinceId, Calculate.minusOne(maxId), internal.successCallback, internal.failureCallback)
+
         busy = true
     }
 
@@ -150,7 +166,7 @@ Item {
         onCountChanged: {
             if (lastCount && settings.keepPosition) {
                 /* Move to one item before newer items */
-                positionViewAtIndex(count - lastCount, ListView.Center);
+                positionViewAtIndex(count - lastCount, ListView.Top);
             }
 
             lastCount = count;

@@ -162,5 +162,6 @@
         <file>qml/tweetian-harmattan/SearchPageCom/AbstractSearch.qml</file>
         <file>qml/tweetian-harmattan/SearchPageCom/TweetSearchPage.qml</file>
         <file>qml/tweetian-harmattan/SearchPageCom/UserSearchPage.qml</file>
+        <file>qml/tweetian-harmattan/Component/ContactHeader.qml</file>
     </qresource>
 </RCC>

@@ -96,122 +96,15 @@ Page {
             id: userColumn
             anchors { top: parent.top; left: parent.left; right: parent.right }
 
-            Item {
-                id: headerItem
-                anchors { left: parent.left; right: parent.right }
-                height: userPage.isPortrait ? width / 2 : width / 4
-
-                Image {
-                    id: headerImage
-                    anchors.fill: parent
-                    cache: false
-                    fillMode: Image.PreserveAspectCrop
-                    clip: true
-                    source: {
-                        if (user.profileBannerUrl)
-                            return user.profileBannerUrl.concat(userPage.isPortrait ? "/web" : "/mobile_retina")
-                        else
-                            return "Image/banner_empty.jpg"
-                    }
-                    opacity: 0.9
-                    onStatusChanged: if (status === Image.Error) source = "Image/banner_empty.jpg"
-                }
-
-                Item {
-                    id: headerTopItem
-                    anchors { left: parent.left; right: parent.right }
-                    height: childrenRect.height
-
-                    Rectangle {
-                        id: profileImageContainer
-                        anchors { right: parent.right; top: parent.top; margins: constant.paddingMedium }
-                        width: profileImage.width + (border.width / 2); height: width
-                        color: "black"
-                        border.width: 2
-                        border.color: profileImageMouseArea.pressed ? constant.colorTextSelection : constant.colorMid
-
-                        Image {
-                            id: profileImage
-                            anchors.centerIn: parent
-                            height: userNameText.height + screenNameText.height; width: height
-                            cache: false
-                            fillMode: Image.PreserveAspectCrop
-                            source: user.profileImageUrl ? user.profileImageUrl.replace("_normal", "_bigger") : ""
-                        }
-
-                        MouseArea {
-                            id: profileImageMouseArea
-                            anchors.fill: parent
-                            onClicked: {
-                                var prop = { imageUrl: user.profileImageUrl.replace("_normal", "") }
-                                pageStack.push(Qt.resolvedUrl("TweetImage.qml"), prop)
-                            }
-                        }
-                    }
-
-                    Text {
-                        id: userNameText
-                        anchors {
-                            top: parent.top
-                            left: parent.left
-                            right: profileImageContainer.left
-                            margins: constant.paddingMedium
-                        }
-                        font.bold: true
-                        font.pixelSize: constant.fontSizeMedium
-                        font.family: Theme.fontFamily
-                        color: "white"
-                        style: Text.Raised
-                        styleColor: "black"
-                        text: user.name || ""
-                        horizontalAlignment: Text.AlignRight
-                    }
-
-                    Text {
-                        id: screenNameText
-                        anchors {
-                            top: userNameText.bottom
-                            right: profileImageContainer.left; rightMargin: constant.paddingMedium
-                            left: parent.left; leftMargin: constant.paddingMedium
-                        }
-                        font.pixelSize: constant.fontSizeMedium
-                        font.family: Theme.fontFamily
-                        color: "white"
-                        style: Text.Raised
-                        styleColor: "black"
-                        text: user.screenName ? "@" + user.screenName : ""
-                        horizontalAlignment: Text.AlignRight
-
-                    }
-                }
-
-                Text {
-                    id: descriptionText
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        top: headerTopItem.bottom
-                        bottom: parent.bottom
-                        margins: constant.paddingMedium
-                    }
-                    wrapMode: Text.Wrap
-                    elide: Text.ElideRight
-                    maximumLineCount: userPage.isPortrait ? 5 : 4 // TODO: remove hardcoded value
-                    font.pixelSize: constant.fontSizeSmall
-                    font.family: Theme.fontFamily
-                    verticalAlignment: Text.AlignBottom
-                    color: "white"
-                    style: Text.Raised
-                    styleColor: "black"
-                    text: user.description || ""
-                }
+            ContactHeader {
+                user: userPage.user
             }
 
-            Rectangle {
-                anchors { left: parent.left; right: parent.right }
-                height: 1
-                color: constant.colorDisabled
-            }
+//            Rectangle {
+//                anchors { left: parent.left; right: parent.right }
+//                height: 1
+//                color: constant.colorDisabled
+//            }
 
             Repeater {
                 id: userInfoRepeater

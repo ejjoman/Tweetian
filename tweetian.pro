@@ -98,7 +98,8 @@ OTHER_FILES += qtc_packaging/debian_harmattan/* \
     qml/tweetian-harmattan/Dialog/*.qml \
     qml/tweetian-harmattan/Utils/*js \
     qml/tweetian-harmattan/Services/*js \
-    qml/tweetian-harmattan/MeTab.qml
+    qml/tweetian-harmattan/MeTab.qml \
+    qml/tweetian-harmattan/Component/ContactHeader.qml
     qml/tweetian-harmattan/Services/SearchPageCom/*.qml
 
 CONFIG += link_pkgconfig

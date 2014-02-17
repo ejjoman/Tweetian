@@ -22,7 +22,10 @@ import QtFeedback 5.0
 
 ApplicationWindow {
     id: window
-    initialPage: MainPage { id: mainPage }
+    initialPage: MainPage {
+        id: mainPage
+    }
+
     cover: (settings.oauthToken != "" && settings.oauthTokenSecret != "") ? Qt.resolvedUrl("CoverPage.qml") : undefined;
 
     //showStatusBar: inPortrait
@@ -54,9 +57,12 @@ ApplicationWindow {
         }
 
         function showHttpError(errorCode, errorMessage) {
-            if (errorCode === 0) showText(qsTr("Server or connection error"))
-            else if (errorCode === 429) showText(qsTr("Rate limit reached, please try again later"))
-            else showText(qsTr("Error: %1").arg(errorMessage + " (" + errorCode + ")"))
+            if (errorCode === 0)
+                showText(qsTr("Server or connection error"))
+            else if (errorCode === 429)
+                showText(qsTr("Rate limit reached, please try again later"))
+            else
+                showText(qsTr("Error: %1").arg(errorMessage + " (" + errorCode + ")"))
         }
 
         Label {

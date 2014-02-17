@@ -23,6 +23,7 @@ import "Services/Twitter.js" as Twitter
 import "Component"
 import "Utils/Calculations.js" as Calculate
 import "Utils/Parser.js" as Parser
+import "Utils/Database.js" as Database
 
 Item {
     id: userPage
@@ -57,10 +58,17 @@ Item {
             id: userColumn
             anchors { top: parent.top; left: parent.left; right: parent.right }
 
+            ContactHeader {
+                user: userPage.user
+            }
+            /*
             Item {
                 id: headerItem
                 anchors { left: parent.left; right: parent.right }
                 height: userPage.isPortrait ? width / 2 : width / 4
+
+
+
 
                 Image {
                     id: headerImage
@@ -172,7 +180,7 @@ Item {
                 anchors { left: parent.left; right: parent.right }
                 height: 1
                 color: constant.colorDisabled
-            }
+            } */
 
             Repeater {
                 id: userInfoRepeater
@@ -243,6 +251,22 @@ Item {
                     remorse.execute(qsTr("Signing out from Twitter"), function() { AccountScript.twitterSignOut(); } )
                 }
             }
+
+            MenuItem {
+                text: "Clear cache"
+                onClicked: {
+                    remorse.execute(qsTr("Clearing cache"), function() {
+                        var tables = ["Timeline", "Mentions", "DM", "ScreenNames"]
+
+                        for (var table in tables) {
+                            Database.clearTable(tables[table]);
+                        }
+
+                        settings.settingsLoaded()
+                    });
+                }
+            }
+
             MenuItem {
                 text: "About Tweetian"
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))

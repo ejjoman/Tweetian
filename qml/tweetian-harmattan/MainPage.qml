@@ -28,10 +28,14 @@ import "Utils/Parser.js" as Parser
 Page {
     id: mainPage
 
-    property Item timeline: timeline
-    property Item mentions: mentions
-    property Item directMsg: directMsg
-    property int totalUnreadCount: timeline.unreadCount + mentions.unreadCount + directMsg.unreadCount;
+    //property Item timeline: timeline
+    //property Item mentions: mentions
+    //property Item directMsg: directMsg
+    //property int totalUnreadCount: timeline.unreadCount + mentions.unreadCount + directMsg.unreadCount;
+
+    readonly property TweetListView timeline: timeline
+    readonly property TweetListView mentions: mentions
+    readonly property DirectMessage directMsg: directMsg
 
     onStatusChanged: if (status == PageStatus.Activating) loadingRect.visible = false
 
@@ -75,8 +79,21 @@ Page {
     TabPageHeader {
         id: mainPageHeader
         listView: mainView
-        iconArray: [Qt.resolvedUrl("Image/home.svg"), Qt.resolvedUrl("Image/mail.svg"),
-            Qt.resolvedUrl("Image/inbox.svg"),  "image://theme/icon-m-search", Qt.resolvedUrl("Image/me.svg") ]
+        iconArray: [
+            "image://theme/icon-m-home",
+            "image://theme/icon-m-message",
+            "image://theme/icon-m-mail",
+            "image://theme/icon-m-search",
+            "image://theme/icon-m-person"
+        ]
+
+//        iconArray: [
+//            Qt.resolvedUrl("Image/home.svg"),
+//            Qt.resolvedUrl("Image/mail.svg"),
+//            Qt.resolvedUrl("Image/inbox.svg"),
+//            "image://theme/icon-m-search",
+//            Qt.resolvedUrl("Image/me.svg")
+//        ]
     }
 
     UserStream {
